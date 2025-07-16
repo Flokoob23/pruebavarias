@@ -1,39 +1,55 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JULI CHAVEZ - Fotografía</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JULI CHAVEZ - Fotografía</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header>
-        <div id="logo">JULI CHAVEZ<br><span>Fotografía</span></div>
-        <div id="cart">
-            🛒 <span id="cart-count">0</span> fotos | $<span id="cart-total">0</span>
-        </div>
-    </header>
+  <div id="intro">
+    <h1>JULI CHAVEZ</h1>
+    <h2>Fotografía</h2>
+  </div>
 
-    <main>
-        <section id="albums">
-            <h2>Álbumes</h2>
-            <div class="album-buttons">
-                <button onclick="loadAlbum('naturaleza')">Naturaleza</button>
-                <button onclick="loadAlbum('ciudad')">Ciudad</button>
-            </div>
-            <div id="gallery"></div>
-        </section>
+  <header id="main-header">
+    <div id="logo-small">JULI CHAVEZ <span>Fotografía</span></div>
+    <div id="cart">
+      🛒 <span id="cart-count">0</span> fotos | $<span id="cart-total">0</span>
+    </div>
+  </header>
 
-        <section id="checkout" style="display:none;">
-            <h2>Resumen de Compra</h2>
-            <div id="checkout-images"></div>
-            <p>Total: $<span id="checkout-total"></span></p>
-            <a id="whatsapp-link" target="_blank">
-                <button>Finalizar Compra</button>
-            </a>
-        </section>
-    </main>
+  <main id="main-content">
+    <section id="album-selector">
+      <h3>ELIGE UN ÁLBUM</h3>
+      <div class="album-buttons"></div>
+    </section>
 
-    <script src="script.js"></script>
+    <section id="gallery"></section>
+  </main>
+
+  <div id="image-modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="close">&times;</button>
+      <img id="modal-img" src="" alt="" />
+      <div class="modal-nav">
+        <button id="prev">←</button>
+        <button id="add-cart">Agregar al carrito ($1500)</button>
+        <button id="next">→</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="cart-modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="close">&times;</button>
+      <h3>Resumen de Compra</h3>
+      <div id="cart-items"></div>
+      <p>Total: $<span id="cart-total-modal">0</span></p>
+      <button id="checkout-btn">Finalizar Compra</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
