@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JULI CHAVEZ - Fotografía</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div id="logo">JULI CHAVEZ<br><span>Fotografía</span></div>
+        <div id="cart">
+            🛒 <span id="cart-count">0</span> fotos | $<span id="cart-total">0</span>
+        </div>
+    </header>
+
+    <main>
+        <section id="albums">
+            <h2>Álbumes</h2>
+            <div class="album-buttons">
+                <button onclick="loadAlbum('naturaleza')">Naturaleza</button>
+                <button onclick="loadAlbum('ciudad')">Ciudad</button>
+            </div>
+            <div id="gallery"></div>
+        </section>
+
+        <section id="checkout" style="display:none;">
+            <h2>Resumen de Compra</h2>
+            <div id="checkout-images"></div>
+            <p>Total: $<span id="checkout-total"></span></p>
+            <a id="whatsapp-link" target="_blank">
+                <button>Finalizar Compra</button>
+            </a>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
