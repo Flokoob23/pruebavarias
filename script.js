@@ -1,87 +1,126 @@
+const albums = {
+  naturaleza: Array.from({length:8}, (_,i)=>({
+    src: `https://picsum.photos/seed/nat${i}/400/300`,
+    name: `naturaleza${i+1}.jpg`
+  })),
+  ciudad: Array.from({length:8}, (_,i)=>({
+    src: `https://picsum.photos/seed/ciud${i}/400/300`,
+    name: `ciudad${i+1}.jpg`
+  })),
+  retrato: Array.from({length:8}, (_,i)=>({
+    src: `https://picsum.photos/seed/retr${i}/400/300`,
+    name: `retrato${i+1}.jpg`
+  }))
+};
+
+let currentAlbum = [];
+let currentIndex = 0;
 let cart = [];
 
-const albumImages = {
-    naturaleza: [
-        { src: 'https://picsum.photos/id/1018/300', name: 'naturaleza1.jpg' },
-        { src: 'https://picsum.photos/id/1020/300', name: 'naturaleza2.jpg' }
-    ],
-    ciudad: [
-        { src: 'https://picsum.photos/id/1035/300', name: 'ciudad1.jpg' },
-        { src: 'https://picsum.photos/id/1043/300', name: 'ciudad2.jpg' }
-    ]
+const intro = document.getElementById('intro'),
+      logoSmall = document.getElementById('logo-small');
+
+window.addEventListener('load', () => {
+  setTimeout(()=> intro.classList.add('fade'), 3000);
+  setTimeout(()=> logoSmall.classList.add('show'), 3500);
+  populateAlbums();
+});
+
+function populateAlbums(){
+  const container = document.querySelector('.album-buttons');
+  container.innerHTML = '';
+  Object.keys(albums).forEach(key => {
+    const btn = document.createElement('button');
+    btn.textContent = key.toUpperCase();
+    btn.onclick = ()=> openAlbum(key);
+    container.appendChild(btn);
+  });
+}
+
+function openAlbum(name){
+  intro.style.display = 'none';
+  currentAlbum = albums[name];
+  renderGallery();
+}
+
+function renderGallery(){
+  const gallery = document.getElementById('gallery');
+  gallery.innerHTML = '';
+  currentAlbum.forEach((img, idx)=>{
+    const el = document.createElement('img');
+    el.src = img.src; el.alt = img.name;
+    el.className = 'thumb';
+    el.onclick = ()=> openImage(idx);
+    gallery.appendChild(el);
+  });
+}
+
+function openImage(idx){
+  currentIndex = idx;
+  updateModal();
+  showModal('image-modal');
+}
+
+function updateModal(){
+  const modalImg = document.getElementById('modal-img');
+  modalImg.src = currentAlbum[currentIndex].src;
+}
+
+document.getElementById('prev').onclick = () => {
+  currentIndex = (currentIndex - 1 + currentAlbum.length) % currentAlbum.length;
+  updateModal();
+};
+document.getElementById('next').onclick = () => {
+  currentIndex = (currentIndex + 1) % currentAlbum.length;
+  updateModal();
+};
+document.getElementById('add-cart').onclick = () => {
+  const img = currentAlbum[currentIndex];
+  if (!cart.find(i=> i.name === img.name)) {
+    cart.push(img); updateCart();
+  }
+  hideModal('image-modal');
 };
 
-window.onload = () => {
-    setTimeout(() => {
-        document.getElementById('logo').classList.add('shrink');
-    }, 2000);
+document.querySelectorAll('.modal .close').forEach(b => b.onclick = () => hideModal(b.closest('.modal')));
+document.getElementById('cart').onclick = () => {
+  populateCartModal(); showModal('cart-modal');
 };
 
-function loadAlbum(name) {
-    const gallery = document.getElementById('gallery');
-    gallery.innerHTML = '';
-
-    albumImages[name].forEach((img, index) => {
-        const image = document.createElement('img');
-        image.src = img.src;
-        image.className = 'thumbnail';
-        image.onclick = () => viewImage(img);
-        gallery.appendChild(image);
-    });
+function updateCart(){
+  document.getElementById('cart-count').textContent = cart.length;
+  document.getElementById('cart-total').textContent = cart.length * 1500;
 }
 
-function viewImage(img) {
-    const isInCart = cart.find(c => c.name === img.name);
-    const modal = document.createElement('div');
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100vw';
-    modal.style.height = '100vh';
-    modal.style.background = 'rgba(0,0,0,0.8)';
-    modal.style.display = 'flex';
-    modal.style.justifyContent = 'center';
-    modal.style.alignItems = 'center';
-    modal.innerHTML = `
-        <div style="background:white; padding:20px; text-align:center;">
-            <img src="${img.src}" style="max-width:500px; max-height:80vh;"><br>
-            <button onclick="addToCart('${img.src}', '${img.name}')">Agregar al carrito ($1500)</button>
-            <button onclick="this.parentElement.parentElement.remove()">Cerrar</button>
-        </div>
-    `;
-    document.body.appendChild(modal);
+function populateCartModal(){
+  const container = document.getElementById('cart-items');
+  container.innerHTML = '';
+  cart.forEach((item, i)=>{
+    const div = document.createElement('div');
+    div.className='item';
+    div.innerHTML = `<span>${item.name}</span><div>
+      <button class="remove" onclick="removeItem(${i})">Eliminar</button>
+      <img src="${item.src}" alt="${item.name}" /></div>`;
+    container.appendChild(div);
+  });
+  document.getElementById('cart-total-modal').textContent = cart.length * 1500;
 }
 
-function addToCart(src, name) {
-    cart.push({ src, name });
-    updateCart();
-    document.querySelectorAll('div[style*="position: fixed"]').forEach(modal => modal.remove());
+window.removeItem = function(i){
+  cart.splice(i,1);
+  updateCart(); populateCartModal();
+};
+
+document.getElementById('checkout-btn').onclick = () => {
+  const names = cart.map(i=>i.name).join(', ');
+  const msg = `HOLA QUIERO COMPRAR LAS SIGUIENTES FOTOS: ${names}`;
+  window.open(`https://wa.me/543584328924?text=${encodeURIComponent(msg)}`, '_blank');
+};
+  
+function showModal(id){
+  document.getElementById(id).classList.remove('hidden');
 }
-
-function updateCart() {
-    document.getElementById('cart-count').innerText = cart.length;
-    document.getElementById('cart-total').innerText = cart.length * 1500;
+function hideModal(idOrEl){
+  const el = typeof idOrEl === 'string' ? document.getElementById(idOrEl) : idOrEl;
+  el.classList.add('hidden');
 }
-
-function showCheckout() {
-    document.getElementById('checkout').style.display = 'block';
-    const container = document.getElementById('checkout-images');
-    const total = document.getElementById('checkout-total');
-    const whatsappLink = document.getElementById('whatsapp-link');
-    container.innerHTML = '';
-
-    let message = 'HOLA QUIERO COMPRAR LAS SIGUIENTES FOTOS:\n';
-
-    cart.forEach(item => {
-        const img = document.createElement('img');
-        img.src = item.src;
-        container.appendChild(img);
-        message += `- ${item.name}\n`;
-    });
-
-    const totalAmount = cart.length * 1500;
-    total.innerText = totalAmount;
-    whatsappLink.href = `https://wa.me/543584328924?text=${encodeURIComponent(message)}`;
-}
-
-document.getElementById('cart').addEventListener('click', showCheckout);
